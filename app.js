@@ -1,5 +1,11 @@
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
+const http = require('http');
+
+const WebSocket = require('ws')
+const wss = new WebSocket.Server({
+    port: 3000
+})
 
 const bodyParser = require('body-parser')
 
@@ -10,6 +16,22 @@ const upload = multer({
 
 const Mock = require('mockjs')
 const mock = Mock.mock.bind(Mock)
+
+wss.on('open', function open() {
+    console.log('connected')
+})
+
+wss.on('close', function close() {
+    console.log('close')
+})
+
+wss.on('connection', function connection(ws, req) {
+    ws.send("connection")
+    ws.on('message', function incoming(message) {
+        console.log('getMessage', message)
+    });
+
+});
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -55,6 +77,6 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
+// app.listen(3000, function () {
+//     console.log('Example app listening on port 3000!');
+// });
