@@ -23,6 +23,42 @@
         function sendMessage() {
             ws.send('777')
         }
+
+        function exportExcel(data, header) {
+            let workBook = XLSX.utils.book_new();
+            let sheet = XLSX.utils.json_to_sheet(data, { header: header });
+            sheet = this.replaceHeader(sheet, header.length)
+            XLSX.utils.book_append_sheet(workBook, sheet, '规划归档表.xlsx');
+            XLSX.writeFile(workBook, '规划归档表.xlsx');
+        }
+        function handleData(data, headerArr) {
+            for (let i = 0; i < data.length; i++) {
+                let str = JSON.stringify(data[i], headerArr);
+                data[i] = JSON.parse(str);
+            }
+            return data
+        }
+        //表头替换成中文
+        function replaceHeader(sheet, len) {
+            let headerKey = this.getHeader(len);
+            for (let i = 0; i < headerKey.length; i++) {
+                let key = headerKey[i];
+                let value = sheet[key].v;
+                sheet[key].v = this.o[value];
+            }
+            return sheet
+        }
+        //拿到表头编号A1 -X1
+        function getHeader(n) {
+            let r = [];
+            for (let i = 0; i < n; i++) {
+                let ascii = 65 + i;
+                let s = String.fromCharCode(ascii) + '1';
+                r.push(s);
+            }
+            return r
+        }
+
     </script>
 </body>
 
