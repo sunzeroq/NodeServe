@@ -1,10 +1,11 @@
 const express = require('express')
 const app = express()
 const http = require('http');
+const server = http.createServer(app);
 
 const WebSocket = require('ws')
 const wss = new WebSocket.Server({
-    port: 3000
+    server: server
 })
 
 const bodyParser = require('body-parser')
@@ -77,6 +78,6 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
-// app.listen(3000, function () {
-//     console.log('Example app listening on port 3000!');
-// });
+server.listen(3000, function () {
+    console.log('Example app listening on port 3000!');
+});
